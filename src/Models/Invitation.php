@@ -46,6 +46,9 @@ class Invitation extends Model
     protected $with = ['referrerTeam', 'referrer', 'invitee'];
     protected $appends = ['status'];
     protected $hidden = ['old_password'];
+    protected $casts = [
+        'data' => 'array',
+    ];
 
     public static function make($referrerTeam, $referrer, $invitee, $data = null)
     {
@@ -55,7 +58,7 @@ class Invitation extends Model
         $invitation->referrer()->associate($referrer);
         $invitation->invitee()->associate($invitee);
         $invitation->old_password = $invitee->password;
-        $invitation->data = $data;
+        $invitation->data = collect($data);
         $invitation->save();
 
         // Generate its token
